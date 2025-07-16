@@ -349,7 +349,6 @@ ssh_connect() {
         clear
         display_menu
         choice_menu
-        return
     fi
     
     # Extract server details
@@ -380,7 +379,6 @@ wol_wake() {
         clear
         display_menu
         choice_menu
-        return 
     fi
     
     # Extract server details

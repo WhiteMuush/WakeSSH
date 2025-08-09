@@ -1,4 +1,11 @@
-# Servers Manager
+
+#        ██╗    ██╗ █████╗ ██╗  ██╗███████╗███████╗███████╗██╗  ██╗
+#        ██║    ██║██╔══██╗██║ ██╔╝██╔════╝██╔════╝██╔════╝██║  ██║
+#        ██║ █╗ ██║███████║█████╔╝ █████╗  ███████╗███████╗███████║
+#        ██║███╗██║██╔══██║██╔═██╗ ██╔══╝  ╚════██║╚════██║██╔══██║
+#        ╚███╔███╔╝██║  ██║██║  ██╗███████╗███████║███████║██║  ██║
+#         ╚══╝╚══╝ ╚═╝  ╚═╝╚═╝  ╚═╝╚══════╝╚══════╝╚══════╝╚═╝  ╚═╝
+
 
 ## Description
 Servers Manager est un outil en ligne de commande qui permet de gérer facilement vos connexions à distance vers différents serveurs. Ce script bash offre une interface utilisateur conviviale pour gérer les connexions SSH et les fonctionnalités Wake-on-LAN (WOL).

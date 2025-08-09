@@ -39,9 +39,7 @@ ensure_writable() {
 }
 
 init_files() {
-    : >"$SERVERS_ALL"       || true
-    : >"$SERVERS_SSH"       || true
-    : >"$SERVERS_WOL"       || true
+    touch "$SERVERS_ALL" "$SERVERS_SSH" "$SERVERS_WOL" 2>/dev/null || true
     chmod 644 "$SERVERS_ALL" "$SERVERS_SSH" "$SERVERS_WOL" 2>/dev/null || true
 }
 

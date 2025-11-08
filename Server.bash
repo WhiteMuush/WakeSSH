@@ -13,9 +13,10 @@ RED='\033[31m'
 
 # Paths
 SCRIPT_DIR="$(cd -- "$(dirname -- "${BASH_SOURCE[0]}")" >/dev/null 2>&1 && pwd)"
-SERVERS_ALL="$SCRIPT_DIR/servers.txt"
-SERVERS_SSH="$SCRIPT_DIR/serversSSH.txt"
-SERVERS_WOL="$SCRIPT_DIR/serversWOL.txt"
+DATA_DIR="${XDG_DATA_HOME:-$HOME/.local/share}/wakessh"
+SERVERS_ALL="$DATA_DIR/servers.txt"
+SERVERS_SSH="$DATA_DIR/serversSSH.txt"
+SERVERS_WOL="$DATA_DIR/serversWOL.txt"
 
 # Globals
 SELECTED_LINE=""
@@ -30,15 +31,21 @@ safe_grep_q() { grep -Fq -- "$1" "$2"; }
 escape_sed_re() { printf '%s' "$1" | sed -e 's/[.[\*^$()+?{}|]/\\&/g'; }
 
 ensure_writable() {
-    if ! touch "$SCRIPT_DIR/.writetest.$$" 2>/dev/null; then
-        printf "%bError: No write permissions in directory %s%b\n" "$RED" "$SCRIPT_DIR" "$RESET"
-        printf "%bPlease run this script from a directory where you have write permissions%b\n" "$RED" "$RESET"
+    if ! mkdir -p "$DATA_DIR" >/dev/null 2>&1; then
+        printf "%bError: Cannot create %s%b\n" "$RED" "$DATA_DIR" "$RESET"
+        printf "%bPlease ensure you have write permissions for that location%b\n" "$RED" "$RESET"
         exit 1
     fi
-    rm -f "$SCRIPT_DIR/.writetest.$$"
+    if ! touch "$DATA_DIR/.writetest.$$" 2>/dev/null; then
+        printf "%bError: No write permissions in directory %s%b\n" "$RED" "$DATA_DIR" "$RESET"
+        printf "%bPlease ensure you have write permissions for that location%b\n" "$RED" "$RESET"
+        exit 1
+    fi
+    rm -f "$DATA_DIR/.writetest.$$"
 }
 
 init_files() {
+    mkdir -p "$DATA_DIR" >/dev/null 2>&1 || true
     touch "$SERVERS_ALL" "$SERVERS_SSH" "$SERVERS_WOL" 2>/dev/null || true
     chmod 644 "$SERVERS_ALL" "$SERVERS_SSH" "$SERVERS_WOL" 2>/dev/null || true
 }
@@ -271,8 +278,8 @@ wol_wake() {
 
     echo "Waking up $server_name with MAC address $server_mac..."
     if command -v wakeonlan >/dev/null 2>&1; then
-        wakeonlan "$server_mac"
-        echo "Wake-on-LAN packet sent to $server_name ($server_ip)."
+        wakeonlan -p 9 -i "$server_ip" "$server_mac"
+        echo "Wake-on-LAN packet sent to $server_name ($server_ip) on UDP port 9."
     else
         echo "wakeonlan not found. Install: sudo apt-get install wakeonlan"
     fi
